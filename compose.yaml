@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgis/postgis:16-3.5
+    environment:
+      POSTGRES_DB: runlog
+      POSTGRES_USER: runlog
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-runlog_dev}
+    ports:
+      - "5432:5432"
+    volumes:
+      - runlog_data:/var/lib/postgresql/data
+      - ./db/10-runlog.sql:/docker-entrypoint-initdb.d/10-runlog.sql:ro
+      - ./db/20-run-summary.sql:/docker-entrypoint-initdb.d/20-run-summary.sql:ro
+      - ./db/30-listed-runs.sql:/docker-entrypoint-initdb.d/30-listed-runs.sql:ro
+      - ./db/50-drop-redundant-views.sql:/docker-entrypoint-initdb.d/50-drop-redundant-views.sql:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "runlog", "-d", "runlog"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  runlog_data:
