@@ -4,9 +4,13 @@ import (
 	"time"
 )
 
-type Input struct {
+type ListRunsInput struct {
 	RouteLabel string `json:"route_label" jsonschema:"Name of the route to list runs for."`
 	Limit      int    `json:"limit" jsonschema:"How many runs to list, ordered by most recent first."`
+}
+
+type GetRunInput struct {
+	RunId int `json:"run_id" jsonschema:"Id of the run."`
 }
 
 type Run struct {
